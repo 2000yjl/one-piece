@@ -824,12 +824,59 @@ def snkrdunk_condition_sales(product_id: str, condition_id: int, condition: str)
     }
 
 
+def snkrdunk_psa10_listings(product_id: str) -> dict:
+    url = f"https://snkrdunk.com/v1/apparels/{product_id}/used?perPage=100&page=1&sizeId=0&isSaleOnly=true"
+    html, meta = fetch(url, timeout=12)
+    listings = []
+    if html:
+        try:
+            payload = json.loads(html)
+        except json.JSONDecodeError:
+            payload = {}
+        for row in payload.get("apparelUsedItems", []):
+            if row.get("isDisplaySold"):
+                continue
+            if clean(row.get("displayShortConditionTitle")) != "PSA10":
+                continue
+            price = row.get("price")
+            if not price:
+                continue
+            listing_id = row.get("id")
+            size = row.get("size") or {}
+            listings.append(
+                {
+                    "id": listing_id,
+                    "price_jpy": int(price),
+                    "condition": "PSA10",
+                    "size_label": size.get("localizedName") or "",
+                    "image": ((row.get("primaryPhoto") or {}).get("imageUrl") or ""),
+                    "url": f"https://snkrdunk.com/apparels/{product_id}/used/{listing_id}?slide=right" if listing_id else f"https://snkrdunk.com/apparels/{product_id}/used?slide=right",
+                    "updated_at": row.get("updatedAt"),
+                }
+            )
+    return {
+        "status": "ok" if listings else ("empty" if html else "failed"),
+        "source": meta,
+        "sample_limit": 100,
+        "sample_capped": len(listings) >= 100,
+        "count": len(listings),
+        "listings": sorted(listings, key=lambda item: item["price_jpy"]),
+    }
+
+
 def snkrdunk_live_naked_sales(product_id: str) -> dict:
     return snkrdunk_condition_sales(product_id, 18, "A")
 
 
 def snkrdunk_live_psa10_sales(product_id: str) -> dict:
-    return snkrdunk_condition_sales(product_id, 22, "PSA10")
+    sales = snkrdunk_condition_sales(product_id, 22, "PSA10")
+    listing_payload = snkrdunk_psa10_listings(product_id)
+    sales["listing_count"] = listing_payload["count"]
+    sales["listing_sample_capped"] = listing_payload["sample_capped"]
+    sales["listings"] = listing_payload["listings"]
+    if listing_payload["listings"]:
+        sales["listing_min_jpy"] = listing_payload["listings"][0]["price_jpy"]
+    return sales
 
 
 def parse_snkrdunk_search(query: str) -> dict:

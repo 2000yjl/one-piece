@@ -69,28 +69,42 @@ function sortCards(cards) {
   if (mode === "rise") return copy.sort((a, b) => (psa10(b).trend?.percent ?? -Infinity) - (psa10(a).trend?.percent ?? -Infinity));
   if (mode === "fall") return copy.sort((a, b) => (psa10(a).trend?.percent ?? Infinity) - (psa10(b).trend?.percent ?? Infinity));
   if (mode === "active") return copy.sort((a, b) => (psa10(b).sales_count || 0) - (psa10(a).sales_count || 0));
-  if (mode === "price_desc") return copy.sort((a, b) => (hasPrice(sales(b).listing_min_jpy) ? sales(b).listing_min_jpy : -Infinity) - (hasPrice(sales(a).listing_min_jpy) ? sales(a).listing_min_jpy : -Infinity));
-  if (mode === "price_asc") return copy.sort((a, b) => (hasPrice(sales(a).listing_min_jpy) ? sales(a).listing_min_jpy : Infinity) - (hasPrice(sales(b).listing_min_jpy) ? sales(b).listing_min_jpy : Infinity));
+  if (mode === "price_desc") return copy.sort((a, b) => (hasPrice(psa10(b).listing_min_jpy) ? psa10(b).listing_min_jpy : -Infinity) - (hasPrice(psa10(a).listing_min_jpy) ? psa10(a).listing_min_jpy : -Infinity));
+  if (mode === "price_asc") return copy.sort((a, b) => (hasPrice(psa10(a).listing_min_jpy) ? psa10(a).listing_min_jpy : Infinity) - (hasPrice(psa10(b).listing_min_jpy) ? psa10(b).listing_min_jpy : Infinity));
   return copy.sort((a, b) => (a.rank || Infinity) - (b.rank || Infinity));
 }
 
-function cardTile(card) {
+function expandPsa10Listings(cards) {
+  const rows = [];
+  (cards || []).forEach((card) => {
+    (psa10(card).listings || []).forEach((listing) => rows.push({ card, listing }));
+  });
+  const mode = $("sortSelect").value;
+  rows.sort((a, b) => mode === "price_desc" ? b.listing.price_jpy - a.listing.price_jpy : a.listing.price_jpy - b.listing.price_jpy);
+  return rows;
+}
+
+function cardTile(card, listing = null) {
   const a = sales(card);
   const p10 = psa10(card);
   const delta = p10.trend?.percent;
+  const primaryPrice = listing ? listing.price_jpy : a.listing_min_jpy;
+  const primaryLabel = listing ? "PSA10 当前挂售" : "A 品当前最低挂售";
+  const badge = listing ? "PSA10挂售" : `#${card.rank || "-"}`;
   return `<button class="snk-card" data-product-id="${card.product_id}">
     <span class="snk-image">
-      <span class="popular-rank">#${card.rank || "-"}</span>
+      <span class="popular-rank">${badge}</span>
       <img src="${card.image}" alt="${card.title}" loading="lazy" />
     </span>
     <span class="snk-card-body">
       <b>${card.title}</b>
       <span class="snk-code">${card.code || `SNK #${card.product_id}`}</span>
-      <strong>${listingYen(a.listing_min_jpy)}</strong>
-      <small>A 品当前最低挂售</small>
+      <strong>${listingYen(primaryPrice)}</strong>
+      <small>${primaryLabel}${listing?.size_label ? ` · ${listing.size_label}` : ""}</small>
       <span class="sale-summary">
         <small>A 品成交 ${yen(a.latest_jpy)}</small>
         <small>PSA10 成交 ${yen(p10.latest_jpy)}</small>
+        <small>PSA10 挂售 ${p10.listing_count || 0} 个</small>
         <small class="${trendClass(delta)}">PSA10 ${trendText(delta)}</small>
       </span>
     </span>
@@ -100,10 +114,18 @@ function cardTile(card) {
 function renderSearch() {
   const data = state.search;
   if (!data) return;
+  const isPsaListingSort = ["price_desc", "price_asc"].includes($("sortSelect").value);
   const cards = sortCards(data.cards || []);
+  if (isPsaListingSort) {
+    const listings = expandPsa10Listings(data.cards || []);
+    $("searchTitle").textContent = `${data.normalized || "全部"} · ${listings.length} 个 PSA10 实时挂售`;
+    $("searchNote").textContent = `按 SNKRDUNK PSA10 当前挂售价逐条展开 · 同一张卡多个挂售会出现多格 · ${data.fetched_at}`;
+    $("snkCardWall").innerHTML = listings.length ? listings.map((row) => cardTile(row.card, row.listing)).join("") : `<p class="empty">当前没有可确认的 PSA10 挂售。</p>`;
+    return;
+  }
   $("searchTitle").textContent = `${data.normalized || "全部"} · ${cards.length} 个实时在售商品`;
   $("searchNote").textContent = `SNKRDUNK 当前公开在售商品变体 · A 品裸卡参考价 · PSA10 成交涨跌 · ${data.fetched_at}`;
-  $("snkCardWall").innerHTML = cards.length ? cards.map(cardTile).join("") : `<p class="empty">SNKRDUNK 当前没有公开在售商品，请查看下方 Bandai 官方卡图目录。</p>`;
+  $("snkCardWall").innerHTML = cards.length ? cards.map((card) => cardTile(card)).join("") : `<p class="empty">SNKRDUNK 当前没有公开在售商品，请查看下方 Bandai 官方卡图目录。</p>`;
 }
 
 function renderOfficial() {
