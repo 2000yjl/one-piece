@@ -22,9 +22,9 @@ from cryptography.hazmat.primitives.asymmetric.utils import decode_dss_signature
 
 
 ROOT = Path(__file__).resolve().parent
-PUBLIC = ROOT / "public" if (ROOT / "public").exists() else ROOT
+PUBLIC = ROOT / "public" if (ROOT / "public").is_dir() else ROOT
 LIMITLESS = "https://onepiece.limitlesstcg.com"
-DATA = ROOT / "data" if (ROOT / "data").exists() else ROOT
+DATA = ROOT / "data" if (ROOT / "data").is_dir() else ROOT
 HISTORY_FILE = DATA / "history.jsonl"
 SNK_HISTORY_FILE = DATA / "snkrdunk_history.jsonl"
 BANDAI_CATALOG_FILE = DATA / "bandai_catalog.json"
