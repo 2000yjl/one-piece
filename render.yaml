@@ -1,4 +1,12 @@
-__pycache__/
-*.pyc
-server.err.log
-server.out.log
+services:
+  - type: web
+    name: grand-line-index
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PYTHONUTF8
+        value: "1"
