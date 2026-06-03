@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grand Line Index | 海贼王卡牌行情</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">ONE PIECE CARD MARKET DATABASE</p>
+        <h1>Grand Line Index</h1>
+        <p class="header-note">海贼王卡牌 A 品裸卡与 PSA10 行情观察站</p>
+      </div>
+      <div class="header-right">
+        <div id="refreshMeta" class="refresh-meta">等待查询</div>
+        <button id="overviewRefresh" class="icon-btn" title="刷新行情总览" aria-label="刷新行情总览">↻</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="search-panel">
+        <form id="searchForm" class="search-row">
+          <input id="query" name="q" value="路飞" autocomplete="off" placeholder="输入 OP05-119 / 路飞 / luffy / ルフィ" />
+          <button type="submit">查询卡牌</button>
+        </form>
+        <div class="quick-row" id="quickRow">
+          <button data-q="路飞">路飞</button>
+          <button data-q="索隆">索隆</button>
+          <button data-q="娜美">娜美</button>
+          <button data-q="艾斯">艾斯</button>
+          <button data-q="OP05-119">OP05-119</button>
+        </div>
+      </section>
+
+      <nav class="tabs" aria-label="主要视图">
+        <button class="tab active" data-view="search">卡牌搜索</button>
+        <button class="tab" data-view="catalog">全部卡牌</button>
+        <button class="tab" data-view="overview">行情总览</button>
+        <button class="tab" data-view="recommend">推荐购买</button>
+        <button class="tab hidden" data-view="detail">卡牌详情</button>
+      </nav>
+
+      <section id="searchView" class="view">
+        <section class="panel search-results-panel">
+          <div class="panel-title search-result-head">
+            <div>
+              <p class="eyebrow">SNKRDUNK LIVE MARKET LISTINGS</p>
+              <h2 id="searchTitle">正在读取实时在售商品</h2>
+              <p id="searchNote" class="muted">站内整合 SNKRDUNK A 品裸卡与 PSA10 成交数据</p>
+            </div>
+            <select id="sortSelect" aria-label="排序方式">
+              <option value="popular">热门顺序</option>
+              <option value="rise">PSA10 涨幅优先</option>
+              <option value="fall">PSA10 跌幅优先</option>
+              <option value="active">PSA10 成交活跃</option>
+              <option value="price_desc">出品价从高到低</option>
+              <option value="price_asc">出品价从低到高</option>
+            </select>
+          </div>
+          <div id="snkCardWall" class="snk-card-wall"></div>
+        </section>
+        <section class="panel official-panel">
+          <div class="panel-title">
+            <div><p class="eyebrow">BANDAI OFFICIAL CARD DIRECTORY</p><h2>官方匹配卡图目录</h2></div>
+            <span id="officialMeta" class="muted">正在读取...</span>
+          </div>
+          <p class="directory-note">这里包含未在 SNKRDUNK 上架的卡牌与不同插画版本。点击卡图后，按卡号进入站内实时行情查询。</p>
+          <div id="officialCardWall" class="official-card-wall"></div>
+        </section>
+      </section>
+
+      <section id="overviewView" class="view hidden">
+        <div class="summary-band" id="summaryBand"></div>
+        <div class="ranking-grid">
+          <section class="panel">
+            <div class="panel-title"><h2>热门卡牌</h2><span class="status">SNKRDUNK</span></div>
+            <div class="ranking-list" id="highPrice"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-title"><h2>PSA10 涨幅榜</h2><span class="status ok">LIVE</span></div>
+            <div class="ranking-list" id="gainers"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-title"><h2>PSA10 跌幅榜</h2><span class="status fail">LIVE</span></div>
+            <div class="ranking-list" id="losers"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-title"><h2>PSA10 近期记录活跃榜</h2><span class="status">LIVE</span></div>
+            <div class="ranking-list" id="psaOverview"></div>
+          </section>
+        </div>
+        <section class="panel catalog-panel">
+          <div class="panel-title">
+            <div><p class="eyebrow">MARKET WATCH</p><h2>行情观察卡牌</h2></div>
+            <span id="catalogMeta" class="muted"></span>
+          </div>
+          <div id="watchlist" class="watch-grid"></div>
+        </section>
+      </section>
+
+      <section id="catalogView" class="view hidden">
+        <section class="panel catalog-browser">
+          <div class="panel-title catalog-browser-head">
+            <div>
+              <p class="eyebrow">COMPLETE BANDAI CARD DIRECTORY</p>
+              <h2>全部官方卡牌与插画版本</h2>
+              <p id="allCatalogMeta" class="muted">首次打开会建立完整目录缓存。</p>
+            </div>
+            <form id="catalogFilterForm" class="catalog-filter">
+              <input id="catalogFilter" autocomplete="off" placeholder="筛选卡号、角色名或系列" />
+              <button type="submit">筛选</button>
+            </form>
+          </div>
+          <div id="allCatalogWall" class="official-card-wall"></div>
+          <div class="pagination">
+            <button id="catalogPrev" type="button">上一页</button>
+            <b id="catalogPage">-</b>
+            <button id="catalogNext" type="button">下一页</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="recommendView" class="view hidden">
+        <section class="recommend-head">
+          <p class="eyebrow">COLLECTOR WATCHLIST</p>
+          <h2>推荐购买观察清单</h2>
+          <p>按收藏共识、角色热度、版本稀有度与市场流动性整理。只展示能够确认口径的行情；Mercari 公开搜索无法可靠识别具体版本，因此仅保留人工核验入口。</p>
+        </section>
+        <div id="recommendGroups" class="recommend-groups"></div>
+      </section>
+
+      <section id="detailView" class="view hidden">
+        <div class="detail-grid">
+          <aside class="card-visual">
+            <div class="image-frame"><img id="cardImage" alt="卡牌图片" /></div>
+            <div class="source-strip" id="sourceStrip"></div>
+          </aside>
+          <section class="main-stack">
+            <div class="card-head">
+              <div>
+                <p class="muted" id="cardCode">-</p>
+                <h2 id="cardName">选择一张卡牌</h2>
+                <p id="cardLine" class="subline"></p>
+              </div>
+              <button id="backButton" class="back-btn">返回卡墙</button>
+            </div>
+            <div class="metrics" id="metrics"></div>
+            <section class="panel">
+              <div class="panel-title history-head">
+                <div>
+                  <p class="eyebrow">SALES HISTORY</p>
+                  <h2 id="historyTitle">PSA10 成交趋势</h2>
+                </div>
+                <div class="sales-toggle" role="tablist" aria-label="成交品相">
+                  <button type="button" data-condition="A">A 品裸卡</button>
+                  <button type="button" class="active" data-condition="PSA10">PSA10</button>
+                </div>
+              </div>
+              <div class="chart-meta"><span id="historyStatus" class="status">读取中</span></div>
+              <canvas id="historyChart" width="900" height="250"></canvas>
+            </section>
+            <section class="panel">
+              <div class="panel-title"><h2 id="salesListTitle">PSA10 最近成交</h2><span id="priceStatus" class="status">LIVE</span></div>
+              <div id="priceRows" class="table-list"></div>
+            </section>
+            <section class="panel source-panel">
+              <div class="panel-title"><h2>原始来源</h2><span id="altStatus" class="status">SNKRDUNK</span></div>
+              <div id="altSources" class="feed"></div>
+            </section>
+            <section class="panel compare-panel">
+              <div class="panel-title">
+                <div><p class="eyebrow">BUYING COMPARISON</p><h2>跨平台购买比价</h2></div>
+                <span id="compareStatus" class="status">读取中</span>
+              </div>
+              <div id="marketCompare" class="market-compare"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-title"><h2>同次搜索中的相关卡牌</h2><span class="status">站内查看</span></div>
+              <div id="results" class="result-grid"></div>
+            </section>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
