@@ -69,6 +69,7 @@ function sortCards(cards) {
   if (mode === "rise") return copy.sort((a, b) => (psa10(b).trend?.percent ?? -Infinity) - (psa10(a).trend?.percent ?? -Infinity));
   if (mode === "fall") return copy.sort((a, b) => (psa10(a).trend?.percent ?? Infinity) - (psa10(b).trend?.percent ?? Infinity));
   if (mode === "active") return copy.sort((a, b) => (psa10(b).sales_count || 0) - (psa10(a).sales_count || 0));
+  if (mode === "release_desc") return copy.sort((a, b) => Date.parse(b.released_at || 0) - Date.parse(a.released_at || 0));
   if (mode === "price_desc") return copy.sort((a, b) => (hasPrice(psa10(b).listing_min_jpy) ? psa10(b).listing_min_jpy : -Infinity) - (hasPrice(psa10(a).listing_min_jpy) ? psa10(a).listing_min_jpy : -Infinity));
   if (mode === "price_asc") return copy.sort((a, b) => (hasPrice(psa10(a).listing_min_jpy) ? psa10(a).listing_min_jpy : Infinity) - (hasPrice(psa10(b).listing_min_jpy) ? psa10(b).listing_min_jpy : Infinity));
   return copy.sort((a, b) => (a.rank || Infinity) - (b.rank || Infinity));
@@ -105,6 +106,7 @@ function cardTile(card, listing = null) {
         <small>A 品成交 ${yen(a.latest_jpy)}</small>
         <small>PSA10 成交 ${yen(p10.latest_jpy)}</small>
         <small>PSA10 挂售 ${p10.listing_count || 0} 个</small>
+        ${card.display_released_at ? `<small>发售 ${card.display_released_at}</small>` : ""}
         <small class="${trendClass(delta)}">PSA10 ${trendText(delta)}</small>
       </span>
     </span>
@@ -119,12 +121,12 @@ function renderSearch() {
   if (isPsaListingSort) {
     const listings = expandPsa10Listings(data.cards || []);
     $("searchTitle").textContent = `${data.normalized || "全部"} · ${listings.length} 个 PSA10 实时挂售`;
-    $("searchNote").textContent = `按 SNKRDUNK PSA10 当前挂售价逐条展开 · 同一张卡多个挂售会出现多格 · ${data.fetched_at}`;
+    $("searchNote").textContent = `按 SNKRDUNK PSA10 当前挂售价逐条展开 · 同一张卡多个挂售会出现多格 · 搜索词 ${data.terms?.join(" / ") || data.normalized} · ${data.fetched_at}`;
     $("snkCardWall").innerHTML = listings.length ? listings.map((row) => cardTile(row.card, row.listing)).join("") : `<p class="empty">当前没有可确认的 PSA10 挂售。</p>`;
     return;
   }
   $("searchTitle").textContent = `${data.normalized || "全部"} · ${cards.length} 个实时在售商品`;
-  $("searchNote").textContent = `SNKRDUNK 当前公开在售商品变体 · A 品裸卡参考价 · PSA10 成交涨跌 · ${data.fetched_at}`;
+  $("searchNote").textContent = `SNKRDUNK 当前公开在售商品变体 · A 品裸卡参考价 · PSA10 成交涨跌 · 搜索词 ${data.terms?.join(" / ") || data.normalized} · ${data.fetched_at}`;
   $("snkCardWall").innerHTML = cards.length ? cards.map((card) => cardTile(card)).join("") : `<p class="empty">SNKRDUNK 当前没有公开在售商品，请查看下方 Bandai 官方卡图目录。</p>`;
 }
 

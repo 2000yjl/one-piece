@@ -35,6 +35,7 @@ POP_CACHE: tuple[float, dict] | None = None
 BANDAI_SEARCH_CACHE: dict[str, tuple[float, dict]] = {}
 BANDAI_ALL_CACHE: tuple[float, list[dict]] | None = None
 MERCARI_CACHE: dict[str, tuple[float, dict]] = {}
+SNK_SEARCH_CACHE: dict[str, tuple[float, dict]] = {}
 WATCHLIST = [
     "OP05-119",
     "OP01-003",
@@ -107,63 +108,58 @@ ALIASES = {
 }
 
 SNK_ALIASES = {
-    "luffy": "ルフィ",
-    "路飞": "ルフィ",
-    "路費": "ルフィ",
-    "路费": "ルフィ",
-    "鲁夫": "ルフィ",
-    "ルフィ": "ルフィ",
-    "zoro": "ゾロ",
-    "索隆": "ゾロ",
-    "ゾロ": "ゾロ",
-    "nami": "ナミ",
-    "娜美": "ナミ",
-    "ナミ": "ナミ",
-    "ace": "エース",
-    "艾斯": "エース",
-    "エース": "エース",
-    "sanji": "サンジ",
-    "山治": "サンジ",
-    "サンジ": "サンジ",
-    "law": "ロー",
-    "罗": "ロー",
-    "ロー": "ロー",
-    "shanks": "シャンクス",
-    "香克斯": "シャンクス",
-    "シャンクス": "シャンクス",
-    "hancock": "ハンコック",
-    "汉库克": "ハンコック",
-    "漢庫克": "ハンコック",
-    "ハンコック": "ハンコック",
-    "robin": "ロビン",
-    "罗宾": "ロビン",
-    "羅賓": "ロビン",
-    "ロビン": "ロビン",
-    "chopper": "チョッパー",
-    "乔巴": "チョッパー",
-    "喬巴": "チョッパー",
-    "チョッパー": "チョッパー",
-    "sabo": "サボ",
-    "萨博": "サボ",
-    "サボ": "サボ",
-    "kaido": "カイドウ",
-    "凯多": "カイドウ",
-    "カイドウ": "カイドウ",
-    "yamato": "ヤマト",
-    "大和": "ヤマト",
-    "ヤマト": "ヤマト",
-    "mihawk": "ミホーク",
-    "鹰眼": "ミホーク",
-    "鷹眼": "ミホーク",
-    "ミホーク": "ミホーク",
-    "teach": "ティーチ",
-    "黑胡子": "ティーチ",
-    "黒ひげ": "ティーチ",
-    "ティーチ": "ティーチ",
-    "boa": "ハンコック",
-    "perona": "ペローナ",
-    "佩罗娜": "ペローナ",
-    "ペローナ": "ペローナ",
+    "luffy": "モンキー・D・ルフィ", "monkey d luffy": "モンキー・D・ルフィ", "monkey.d.luffy": "モンキー・D・ルフィ", "路飞": "モンキー・D・ルフィ", "路費": "モンキー・D・ルフィ", "路费": "モンキー・D・ルフィ", "鲁夫": "モンキー・D・ルフィ", "ルフィ": "モンキー・D・ルフィ", "モンキー": "モンキー・D・ルフィ",
+    "zoro": "ゾロ", "roronoa zoro": "ゾロ", "索隆": "ゾロ", "ゾロ": "ゾロ", "ロロノア": "ゾロ",
+    "nami": "ナミ", "娜美": "ナミ", "ナミ": "ナミ",
+    "ace": "エース", "portgas d ace": "エース", "艾斯": "エース", "エース": "エース",
+    "sanji": "サンジ", "山治": "サンジ", "サンジ": "サンジ",
+    "law": "ロー", "trafalgar law": "ロー", "罗": "ロー", "羅": "ロー", "ロー": "ロー", "トラファルガー": "ロー",
+    "shanks": "シャンクス", "香克斯": "シャンクス", "红发": "シャンクス", "紅髮": "シャンクス", "シャンクス": "シャンクス",
+    "hancock": "ハンコック", "boa hancock": "ハンコック", "汉库克": "ハンコック", "漢庫克": "ハンコック", "女帝": "ハンコック", "ハンコック": "ハンコック",
+    "robin": "ロビン", "nico robin": "ロビン", "罗宾": "ロビン", "羅賓": "ロビン", "ロビン": "ロビン",
+    "chopper": "チョッパー", "tony tony chopper": "チョッパー", "乔巴": "チョッパー", "喬巴": "チョッパー", "チョッパー": "チョッパー",
+    "sabo": "サボ", "萨博": "サボ", "薩博": "サボ", "サボ": "サボ",
+    "kaido": "カイドウ", "凯多": "カイドウ", "凱多": "カイドウ", "カイドウ": "カイドウ",
+    "yamato": "ヤマト", "大和": "ヤマト", "ヤマト": "ヤマト",
+    "mihawk": "ミホーク", "dracule mihawk": "ミホーク", "鹰眼": "ミホーク", "鷹眼": "ミホーク", "ミホーク": "ミホーク",
+    "teach": "ティーチ", "blackbeard": "ティーチ", "黒ひげ": "ティーチ", "黑胡子": "ティーチ", "ティーチ": "ティーチ",
+    "boa": "ハンコック", "perona": "ペローナ", "佩罗娜": "ペローナ", "ペローナ": "ペローナ",
+}
+
+SNK_QUERY_EXPANSIONS = {
+    "モンキー・D・ルフィ": ["モンキー・D・ルフィ", "ルフィ", "luffy", "Monkey D Luffy"],
+    "ゾロ": ["ゾロ", "ロロノア・ゾロ", "zoro", "Roronoa Zoro"],
+    "ナミ": ["ナミ", "nami"],
+    "エース": ["エース", "ace", "Portgas D Ace"],
+    "ロー": ["ロー", "トラファルガー・ロー", "law", "Trafalgar Law"],
+    "シャンクス": ["シャンクス", "shanks"],
+    "ハンコック": ["ハンコック", "Boa Hancock", "hancock"],
+    "ロビン": ["ロビン", "Nico Robin", "robin"],
+    "チョッパー": ["チョッパー", "chopper"],
+    "サンジ": ["サンジ", "sanji"],
+    "サボ": ["サボ", "sabo"],
+    "ヤマト": ["ヤマト", "yamato"],
+    "カイドウ": ["カイドウ", "kaido"],
+    "ミホーク": ["ミホーク", "mihawk"],
+    "ティーチ": ["ティーチ", "黒ひげ", "blackbeard"],
+}
+
+SNK_TITLE_FILTERS = {
+    "モンキー・D・ルフィ": ["ルフィ", "luffy", "モンキー"],
+    "ゾロ": ["ゾロ", "zoro", "ロロノア"],
+    "ナミ": ["ナミ", "nami"],
+    "エース": ["エース", "ace"],
+    "ロー": ["ロー", "law", "トラファルガー"],
+    "シャンクス": ["シャンクス", "shanks"],
+    "ハンコック": ["ハンコック", "hancock"],
+    "ロビン": ["ロビン", "robin"],
+    "チョッパー": ["チョッパー", "chopper"],
+    "サンジ": ["サンジ", "sanji"],
+    "サボ": ["サボ", "sabo"],
+    "ヤマト": ["ヤマト", "yamato"],
+    "カイドウ": ["カイドウ", "kaido"],
+    "ミホーク": ["ミホーク", "mihawk"],
+    "ティーチ": ["ティーチ", "黒ひげ", "blackbeard", "teach"],
 }
 
 
@@ -677,17 +673,38 @@ def normalize_snkrdunk_query(raw: str) -> str:
     return query
 
 
+def snkrdunk_query_terms(raw: str) -> list[str]:
+    normalized = normalize_snkrdunk_query(raw)
+    terms = SNK_QUERY_EXPANSIONS.get(normalized, [normalized])
+    seen = []
+    for term in terms:
+        if term and term not in seen:
+            seen.append(term)
+    return seen
+
+
 def catalog_query(raw: str) -> str:
     query = clean(unquote(raw))
     lowered = query.lower()
     alias_map = {
-        "路飞": "luffy", "路費": "luffy", "路费": "luffy", "ルフィ": "luffy",
-        "索隆": "zoro", "ゾロ": "zoro", "娜美": "nami", "ナミ": "nami",
-        "艾斯": "ace", "エース": "ace", "罗": "law", "ロー": "law",
-        "大和": "yamato", "ヤマト": "yamato",
+        "路飞": "luffy", "路費": "luffy", "路费": "luffy", "鲁夫": "luffy", "ルフィ": "luffy", "モンキー": "luffy", "luffy": "luffy", "monkey d luffy": "luffy",
+        "索隆": "zoro", "ゾロ": "zoro", "ロロノア": "zoro", "zoro": "zoro", "roronoa zoro": "zoro",
+        "娜美": "nami", "ナミ": "nami", "nami": "nami",
+        "艾斯": "ace", "エース": "ace", "ace": "ace", "portgas d ace": "ace",
+        "罗": "law", "羅": "law", "ロー": "law", "law": "law", "trafalgar law": "law",
+        "香克斯": "shanks", "シャンクス": "shanks", "shanks": "shanks",
+        "山治": "sanji", "サンジ": "sanji", "sanji": "sanji",
+        "汉库克": "hancock", "漢庫克": "hancock", "女帝": "hancock", "ハンコック": "hancock", "hancock": "hancock", "boa hancock": "hancock",
+        "罗宾": "robin", "羅賓": "robin", "ロビン": "robin", "robin": "robin", "nico robin": "robin",
+        "乔巴": "chopper", "喬巴": "chopper", "チョッパー": "chopper", "chopper": "chopper",
+        "萨博": "sabo", "薩博": "sabo", "サボ": "sabo", "sabo": "sabo",
+        "大和": "yamato", "ヤマト": "yamato", "yamato": "yamato",
+        "凯多": "kaido", "凱多": "kaido", "カイドウ": "kaido", "kaido": "kaido",
+        "鹰眼": "mihawk", "鷹眼": "mihawk", "ミホーク": "mihawk", "mihawk": "mihawk",
+        "黑胡子": "teach", "黒ひげ": "teach", "ティーチ": "teach", "blackbeard": "teach", "teach": "teach",
     }
     for key, value in alias_map.items():
-        if key in query:
+        if key in query or key in lowered:
             return value
     return lowered
 
@@ -825,15 +842,28 @@ def snkrdunk_condition_sales(product_id: str, condition_id: int, condition: str)
 
 
 def snkrdunk_psa10_listings(product_id: str) -> dict:
-    url = f"https://snkrdunk.com/v1/apparels/{product_id}/used?perPage=100&page=1&sizeId=0&isSaleOnly=true"
-    html, meta = fetch(url, timeout=12)
     listings = []
-    if html:
+    seen = set()
+    first_meta = {}
+    released_at = None
+    display_released_at = ""
+    for page in range(1, 8):
+        url = f"https://snkrdunk.com/v1/apparels/{product_id}/used?perPage=100&page={page}&sizeId=0&isSaleOnly=true"
+        html, meta = fetch(url, timeout=12)
+        first_meta = first_meta or meta
+        if not html:
+            break
         try:
             payload = json.loads(html)
         except json.JSONDecodeError:
-            payload = {}
-        for row in payload.get("apparelUsedItems", []):
+            break
+        rows = payload.get("apparelUsedItems", [])
+        if not rows:
+            break
+        for row in rows:
+            apparel = row.get("apparel") or {}
+            released_at = released_at or apparel.get("releasedAt")
+            display_released_at = display_released_at or apparel.get("displayReleasedAt") or ""
             if row.get("isDisplaySold"):
                 continue
             if clean(row.get("displayShortConditionTitle")) != "PSA10":
@@ -842,6 +872,9 @@ def snkrdunk_psa10_listings(product_id: str) -> dict:
             if not price:
                 continue
             listing_id = row.get("id")
+            if listing_id in seen:
+                continue
+            seen.add(listing_id)
             size = row.get("size") or {}
             listings.append(
                 {
@@ -854,12 +887,16 @@ def snkrdunk_psa10_listings(product_id: str) -> dict:
                     "updated_at": row.get("updatedAt"),
                 }
             )
+        if len(rows) < 100:
+            break
     return {
-        "status": "ok" if listings else ("empty" if html else "failed"),
-        "source": meta,
-        "sample_limit": 100,
-        "sample_capped": len(listings) >= 100,
+        "status": "ok" if listings else ("empty" if first_meta.get("ok") else "failed"),
+        "source": first_meta,
+        "sample_limit": 700,
+        "sample_capped": len(listings) >= 700,
         "count": len(listings),
+        "released_at": released_at,
+        "display_released_at": display_released_at,
         "listings": sorted(listings, key=lambda item: item["price_jpy"]),
     }
 
@@ -874,82 +911,139 @@ def snkrdunk_live_psa10_sales(product_id: str) -> dict:
     sales["listing_count"] = listing_payload["count"]
     sales["listing_sample_capped"] = listing_payload["sample_capped"]
     sales["listings"] = listing_payload["listings"]
+    sales["released_at"] = listing_payload.get("released_at")
+    sales["display_released_at"] = listing_payload.get("display_released_at") or ""
     if listing_payload["listings"]:
         sales["listing_min_jpy"] = listing_payload["listings"][0]["price_jpy"]
     return sales
 
 
 def parse_snkrdunk_search(query: str) -> dict:
-    normalized = normalize_snkrdunk_query(query)
-    url = (
-        "https://snkrdunk.com/search?"
-        f"brandIds=onepiece&keywords={quote_plus(normalized)}&searchCategoryIds=6%2F33&sort=popular"
-    )
-    html, meta = fetch(url, timeout=20)
+    terms = snkrdunk_query_terms(query)
+    normalized = terms[0] if terms else normalize_snkrdunk_query(query)
+    cache_key = f"snk:{normalized}:{'|'.join(terms)}"
+    cached = SNK_SEARCH_CACHE.get(cache_key)
+    if cached and time.time() - cached[0] < 600:
+        return cached[1]
+
     previous_rows = read_jsonl(SNK_HISTORY_FILE)
     cards = []
-    pages = [html] if html else []
-    if html:
-        page_numbers = [int(value) for value in re.findall(r"(?:amp;)?page=(\d+)", html)]
-        max_page = min(max(page_numbers, default=1), 10)
-        if max_page > 1:
-            with ThreadPoolExecutor(max_workers=6) as pool:
-                extra_pages = list(pool.map(lambda page: fetch(f"{url}&page={page}", timeout=20)[0], range(2, max_page + 1)))
-            pages.extend(page for page in extra_pages if page)
-    if pages:
+    seen = set()
+    source_meta = None
+    source_urls = []
+    title_filters = SNK_TITLE_FILTERS.get(normalized, [])
+
+    def collect_pages(term: str, max_pages: int = 20) -> tuple[list[str], dict, str]:
+        url = (
+            "https://snkrdunk.com/search?"
+            f"brandIds=onepiece&keywords={quote_plus(term)}&searchCategoryIds=6%2F33&sort=popular"
+        )
+        html, meta = fetch(url, timeout=20)
+        pages = [html] if html else []
+        if html:
+            page_numbers = [int(value) for value in re.findall(r"(?:amp;)?page=(\d+)", html)]
+            max_page = min(max(page_numbers, default=1), max_pages)
+            if max_page > 1:
+                with ThreadPoolExecutor(max_workers=6) as pool:
+                    extra_pages = list(pool.map(lambda page: fetch(f"{url}&page={page}", timeout=20)[0], range(2, max_page + 1)))
+                pages.extend(page for page in extra_pages if page)
+        return pages, meta, url
+
+    def add_card_from_anchor(anchor) -> None:
+        href = anchor["href"]
+        match = re.fullmatch(r"(?:https://snkrdunk\.com)?/apparels/(\d+)", href)
+        if not match or match.group(1) in seen:
+            return
+        text = clean(anchor.get_text(" ", strip=True))
+        price_match = re.search(r"¥\s*([\d,]+)|ﾂ¥\s*([\d,]+)|ﾂ･\s*([\d,]+)", text)
+        code_match = re.search(r"\[([A-Z]{1,5}-?\d{2,3}-\d{3}|[A-Z]{1,5}-\d{3}|P-\d{3}|ST\d{2}-\d{3}|EB\d{2}-\d{3}|PRB\d{2}-\d{3})\]", text)
+        rank_match = re.match(r"(\d+)\s+", text)
+        image_node = anchor.find("img")
+        product_id = match.group(1)
+        price_token = next((group for group in (price_match.groups() if price_match else []) if group), None)
+        price_jpy = int(price_token.replace(",", "")) if price_token else None
+        title = re.sub(r"^\d+\s+", "", text)
+        title = re.sub(r"\s*(?:¥|ﾂ¥|ﾂ･)\s*[\d,]+\s*$", "", title)
+        if title_filters and not any(term.lower() in title.lower() for term in title_filters):
+            return
+        card = {
+            "product_id": product_id,
+            "rank": int(rank_match.group(1)) if rank_match else len(cards) + 1,
+            "title": title,
+            "code": code_match.group(1) if code_match else "",
+            "price_jpy": price_jpy,
+            "image": image_node.get("src") if image_node else "",
+            "url": f"https://snkrdunk.com/apparels/{product_id}",
+            "sales_url": f"https://snkrdunk.com/apparels/{product_id}/sales-histories",
+            "released_at": None,
+            "display_released_at": "",
+        }
+        card["trend"] = snkrdunk_trend(product_id, price_jpy, previous_rows)
+        cards.append(card)
+        seen.add(product_id)
+        append_jsonl(
+            SNK_HISTORY_FILE,
+            {"product_id": product_id, "at": now_iso(), "price_jpy": price_jpy, "title": title, "code": card["code"]},
+        )
+
+    def parse_pages(pages: list[str], cap: int = 500) -> None:
         for page_html in pages:
             soup = BeautifulSoup(page_html, "html.parser")
-            seen = {card["product_id"] for card in cards}
             for anchor in soup.find_all("a", href=True):
-                href = anchor["href"]
-                match = re.fullmatch(r"(?:https://snkrdunk\.com)?/apparels/(\d+)", href)
-                if not match or match.group(1) in seen:
-                    continue
-                text = clean(anchor.get_text(" ", strip=True))
-                price_match = re.search(r"¥\s*([\d,]+)", text)
-                code_match = re.search(r"\[([A-Z]{1,4}-?\d{2,3}-\d{3}|[A-Z]{1,4}-\d{3})\]", text)
-                rank_match = re.match(r"(\d+)\s+", text)
-                image_node = anchor.find("img")
-                product_id = match.group(1)
-                price_jpy = int(price_match.group(1).replace(",", "")) if price_match else None
-                title = re.sub(r"^\d+\s+", "", text)
-                title = re.sub(r"\s*¥\s*[\d,]+\s*$", "", title)
-                card = {
-                    "product_id": product_id,
-                    "rank": int(rank_match.group(1)) if rank_match else len(cards) + 1,
-                    "title": title,
-                    "code": code_match.group(1) if code_match else "",
-                    "price_jpy": price_jpy,
-                    "image": image_node.get("src") if image_node else "",
-                    "url": f"https://snkrdunk.com/apparels/{product_id}",
-                    "sales_url": f"https://snkrdunk.com/apparels/{product_id}/sales-histories",
-                }
-                card["trend"] = snkrdunk_trend(product_id, price_jpy, previous_rows)
-                cards.append(card)
-                seen.add(product_id)
-                append_jsonl(
-                    SNK_HISTORY_FILE,
-                    {"product_id": product_id, "at": now_iso(), "price_jpy": price_jpy, "title": title, "code": card["code"]},
-                )
-                if len(cards) >= 200:
-                    break
-            if len(cards) >= 200:
-                break
-    with ThreadPoolExecutor(max_workers=20) as pool:
+                before = len(cards)
+                add_card_from_anchor(anchor)
+                if len(cards) != before and len(cards) >= cap:
+                    return
+
+    # First collect broad keyword results.
+    for term in terms:
+        pages, meta, url = collect_pages(term, max_pages=20)
+        source_meta = source_meta or meta
+        source_urls.append(url)
+        parse_pages(pages)
+
+    # Then use Bandai official directory to expand character searches by exact card code.
+    official_codes = []
+    if not re.fullmatch(r"[A-Z]{1,5}\d{2}-\d{3}|[A-Z]{1,5}-\d{3}|P-\d{3}", normalize_query(query)):
+        try:
+            official = parse_bandai_search(query)
+            official_codes = sorted({card.get("code") for card in official.get("cards", []) if card.get("code")})
+        except Exception:
+            official_codes = []
+    if official_codes:
+        def fetch_code(code: str) -> tuple[list[str], dict, str]:
+            return collect_pages(code, max_pages=5)
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            for pages, meta, url in pool.map(fetch_code, official_codes[:140]):
+                source_meta = source_meta or meta
+                source_urls.append(url)
+                parse_pages(pages, cap=700)
+
+    # Preserve rough popularity order while putting exact official-code discoveries after keyword matches.
+    cards[:] = cards[:700]
+
+    with ThreadPoolExecutor(max_workers=16) as pool:
         live_sales = list(pool.map(lambda card: snkrdunk_live_naked_sales(card["product_id"]), cards))
         psa10_sales = list(pool.map(lambda card: snkrdunk_live_psa10_sales(card["product_id"]), cards))
     for card, sales, psa10 in zip(cards, live_sales, psa10_sales):
         card["naked_sales"] = sales
         card["psa10_sales"] = psa10
         card["trend"] = psa10["trend"]
-    return {
+        if psa10.get("released_at"):
+            card["released_at"] = psa10.get("released_at")
+            card["display_released_at"] = psa10.get("display_released_at") or ""
+    result = {
         "query": query,
         "normalized": normalized,
+        "terms": terms,
+        "official_code_count": len(official_codes),
         "fetched_at": now_iso(),
-        "status": "ok" if cards else ("blocked-or-empty" if html else "failed"),
-        "source": {"name": "SNKRDUNK One Piece singles", **meta},
+        "status": "ok" if cards else ("blocked-or-empty" if source_meta and source_meta.get("ok") else "failed"),
+        "source": {"name": "SNKRDUNK One Piece singles", **(source_meta or {}), "urls": source_urls[:30], "url_count": len(source_urls)},
         "cards": cards,
     }
+    SNK_SEARCH_CACHE[cache_key] = (time.time(), result)
+    return result
 
 
 def snkrdunk_market_overview() -> dict:
